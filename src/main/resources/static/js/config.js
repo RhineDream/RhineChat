@@ -1,4 +1,5 @@
 var gloalUrl = "http://localhost:9999/chat/";
+var socketUrl = "ws://localhost:9999/chat/chat/";
 // 转为json数据格式
 function transformToJson(formData){
     var obj={}
