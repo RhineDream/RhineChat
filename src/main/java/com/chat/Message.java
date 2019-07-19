@@ -3,6 +3,7 @@ package com.chat;
 import com.alibaba.fastjson.JSON;
 
 /**
+ * author：RhineDream
  * WebSocket 聊天消息类
  */
 public class Message {

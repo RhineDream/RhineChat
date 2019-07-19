@@ -11,6 +11,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 public class WebSocketConfig {
 
     /**
+     * author：RhineDream
      * 用于扫描和注册所有携带ServerEndPoint注解的实例。
      * <p>
      * PS:若部署到外部容器 则无需提供此类。

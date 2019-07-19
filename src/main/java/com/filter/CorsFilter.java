@@ -8,7 +8,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+/**
+ * author：RhineDream
+ * 跨域拦截器
+ */
 @Component
 public class CorsFilter implements Filter {
 

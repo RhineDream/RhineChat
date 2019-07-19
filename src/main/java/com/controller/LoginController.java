@@ -17,6 +17,10 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * author：RhineDream
+ * 聊天controller
+ */
 @Controller
 public class LoginController {
 
@@ -33,7 +37,7 @@ public class LoginController {
     /**
      * 聊天界面
      */
-    @GetMapping("/index")
+    /*@GetMapping("/index")
     public ModelAndView index(String username, String password, HttpServletRequest request) throws UnknownHostException {
         ModelAndView mav = new ModelAndView("chat");
         if (StringUtils.isEmpty(username)) {
@@ -57,7 +61,7 @@ public class LoginController {
 
         mav.addObject("webSocketUrl", "ws://"+ InetAddress.getLocalHost().getHostAddress()+":"+request.getServerPort()+request.getContextPath()+"/chat");
         return mav;
-    }
+    }*/
 
     /**
      * 聊天界面
@@ -93,7 +97,7 @@ public class LoginController {
     }
 
     /**
-     * 聊天界面
+     * 注册界面
      */
     @GetMapping("/register")
     public ModelAndView register(String username, String password, HttpServletRequest request) throws UnknownHostException {
@@ -102,7 +106,7 @@ public class LoginController {
     }
 
     /**
-     * 聊天界面
+     * 登录
      */
     @RequestMapping("/dologin")
     @ResponseBody
@@ -136,7 +140,7 @@ public class LoginController {
     }
 
     /**
-     * 聊天界面
+     * 退出
      */
     @RequestMapping("/logout")
     @ResponseBody
@@ -150,7 +154,7 @@ public class LoginController {
     }
 
     /**
-     * 聊天界面
+     * 注册
      */
     @RequestMapping("/doRegister")
     @ResponseBody

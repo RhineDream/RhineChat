@@ -49,14 +49,6 @@
 			<include refid="UserColumns"/>
 		FROM sys_user a
 		<include refid="UserJoins"/>
-		<where>
-			<!--<if test="unitWarehId != null and unitWarehId != ''">
-				AND a.unit_wareh_id = #{unitWarehId}
-			</if>
-			<if test="empNo != null and empNo != ''">
-				AND a.emp_no = #{empNo}
-			</if>-->
-		</where>
 
 		ORDER BY a.create_date desc
 

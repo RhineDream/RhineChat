@@ -68,6 +68,7 @@
 
 
 <script th:inline="javascript">
+    var socketUrl = gloalUrl+'chat/';
     $(function () {
 
         getUserList();
@@ -210,10 +211,10 @@
         let username = $("#usernamehide").val();
 
 
+
         // alert(username);
         // var webSocket = new WebSocket(/*[[${webSocketUrl}]]*/ 'ws://localhost:8080/chat/'+username);
-        // var webSocket = new WebSocket('ws://localhost:9999/chat/chat/'+username);
-        var webSocket = new WebSocket('ws://www.jingyingjidi.com/chat/chat/'+username);
+        var webSocket = new WebSocket(socketUrl+username);
         /**
          * 当服务端打开连接
          */
@@ -470,7 +471,7 @@
 
 <div style="text-align:center;margin:1px 0; font:normal 14px/24px 'MicroSoft YaHei';">
     <p>适用浏览器：360、FireFox、Chrome、Opera、傲游、搜狗、世界之窗. 不支持Safari、IE8及以下浏览器。</p>
-    <p>作者：刘云强</p>
+    <p>作者：Rhine</p>
 </div>
 </body>
 </html>

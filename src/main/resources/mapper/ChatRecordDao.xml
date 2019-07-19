@@ -15,15 +15,6 @@
 	<sql id="ChatRecordJoins">
 	</sql>
 
-
-	<!--<select id="getUserByName" resultType="com.model.ChatRecord">
-		SELECT
-			<include refid="ChatRecordColumns"/>
-		FROM sys_user a
-		<include refid="ChatRecordJoins"/>
-		WHERE a.username = #{username} limit 0,1
-	</select>-->
-
 	<insert id="saveChatRecord">
 		INSERT INTO chat_record(
 			id,
@@ -43,44 +34,6 @@
 			#{groupId}
 		)
 	</insert>
-
-	<!--<select id="findList" resultType="com.model.SendInfo">
-		SELECT 
-			<include refid="ChatRecordColumns"/>
-		FROM chat_record a
-		<include refid="ChatRecordJoins"/>
-		<where>
-			a.del_flag = 0
-			&lt;!&ndash;<if test="unitWarehId != null and unitWarehId != ''">
-				AND a.unit_wareh_id = #{unitWarehId}
-			</if>
-			<if test="empNo != null and empNo != ''">
-				AND a.emp_no = #{empNo}
-			</if>&ndash;&gt;
-		</where>
-
-		ORDER BY a.create_date desc limit 0,20
-
-	</select>-->
-
-
-
-
-
-	
-
-	
-	<!--<update id="update">
-		UPDATE send_info SET
-			pdf_path = #{pdfPath}
-		WHERE id = #{id}
-	</update>-->
-	
-	<!--<update id="delete">
-		UPDATE sequence_unit SET 
-			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id}
-	</update>-->
 
 
 </mapper>

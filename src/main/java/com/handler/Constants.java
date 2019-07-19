@@ -1,11 +1,7 @@
 package com.handler;
 
 /**
- * 2015/6/25
- * <p/>
- * 定义常量
- *
- * @author Jia_RG
+ * author：RhineDream
  */
 public abstract class Constants {
 

@@ -1,7 +1,9 @@
 package com.model;
 
 import java.util.Date;
-
+/**
+ * author：RhineDream
+ */
 public class ChatRecord {
     private String id;
     private String message;

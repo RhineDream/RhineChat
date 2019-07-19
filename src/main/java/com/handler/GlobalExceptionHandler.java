@@ -22,6 +22,7 @@ import java.util.Map;
 
 
 /**
+ * author：RhineDream
  * 全局异常处理器
  * 
  * 异常增强，以JSON的形式返回给客服端

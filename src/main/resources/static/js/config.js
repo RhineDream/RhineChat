@@ -1,5 +1,4 @@
-// var gloalUrl = "http://localhost:9999/chat/";
-var gloalUrl = "http://www.jingyingjidi.com/chat/";
+var gloalUrl = "http://localhost:9999/chat/";
 // 转为json数据格式
 function transformToJson(formData){
     var obj={}

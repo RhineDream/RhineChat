@@ -3,7 +3,9 @@ package com.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
-
+/**
+ * author：RhineDream
+ */
 public class User {
 
     private String id;

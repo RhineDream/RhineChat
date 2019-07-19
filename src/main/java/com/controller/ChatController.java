@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
+/**
+ * author：RhineDream
+ * 聊天controller
+ */
 @RestController
 @RequestMapping("/user")
 public class ChatController {
@@ -20,6 +23,11 @@ public class ChatController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 获取用户列表
+     * @param user
+     * @return
+     */
     @RequestMapping("/getUserList")
     public ResponseResult getUserList(@RequestBody(required = false) User user){
         List<User> list = userService.getUserList(user);

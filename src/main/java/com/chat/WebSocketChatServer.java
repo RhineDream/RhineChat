@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * WebSocket 聊天服务端
- *
+ * author：RhineDream
  * @see ServerEndpoint WebSocket服务端 需指定端点的访问路径
  * @see Session   WebSocket会话对象 通过它给客户端发送消息1
  */

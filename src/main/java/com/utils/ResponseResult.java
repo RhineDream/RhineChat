@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * 自定义响应结构
  * @author Rhine
- * @version 2018-10-29
+ * @version 2019-07-19
  */
 public class ResponseResult {
 
