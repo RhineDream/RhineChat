@@ -1,5 +1,5 @@
 # RhineChat
-### websocket聊天室，支持群聊，单聊，聊天页面仿微信，聊天记录已实现保存数据库。
+### websocket聊天室，支持群聊，单聊，支持发送表情，聊天页面仿微信，聊天记录已实现保存数据库。
 
 # 结构设计
 ### 技术架构：springboot，mybatis，websocket，thymeleaf
