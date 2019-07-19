@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>秋秋聊天室</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/mdui/dist/js/mdui.js}"></script>
+    <link rel="stylesheet" href="css/reset.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.qqFace.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+<!--    <link href="css/bootstrap.min.css" rel="stylesheet">-->
+
+</head>
+<style>
+    .message-container{
+        margin-left:10px;
+        overflow-y:scroll;
+        overflow-x:scroll;
+        height: 500px;
+        /*margin-top: 17px;*/
+        /*background-color: #efdaec;*/
+        /*border-top-left-radius:25px;*/
+        /*!*border-top-right-radius:20px;*!*/
+        /*border-bottom-right-radius:25px;*/
+        /*!*border-bottom-left-radius:20px;*!*/
+
+    }
+</style>
+<body>
+
+<div class="wrapper">
+
+    <div class="container">
+
+        <div class="left">
+            <div class="top">
+                <input type="hidden" th:value="${username}" id="usernamehide">
+                <input type="hidden" th:value="${userId}" id="userId">
+                <input type="hidden" th:value="${name}" id="namehide">
+                <i class="mdui-icon material-icons">你好呀：</i>
+                <i class="mdui-icon" id="username" th:text="${name}"></i>&nbsp;&nbsp;&nbsp;
+                <span class="mdui-chip-title">在线人数</span>
+                <span class="mdui-chip-title chat-num">0</span>
+                <br/>
+                <input type="text" placeholder="Search" />
+                <a href="javascript:;" class="search"></a>
+
+            </div>
+            <ul class="people">
+
+
+            </ul>
+        </div>
+
+        <div class="right">
+            <div class="top"><span>To: <span class="name">Dog Woofson</span></span>
+                <a href="javascript:;"  style="margin-top: 100px;margin-left: 278px" onclick="logout()">退出登录</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    $(function () {
+
+        getUserList();
+        //获取用户列表
+        function getUserList() {
+
+            //获取首页列表
+            var paramdata = {};
+            $.ajax({
+                type: "post",
+                url: gloalUrl + "user/getUserList",
+                data: JSON.stringify(paramdata),
+                // beforeSend: setTokenHeader,
+                contentType: 'application/json',//(可以)
+                dataType: "json",
+                async: false,
+                success: function (data) {
+
+                    if (data.status == 200) {
+                        console.log(data);
+                        let currData = data.data;
+                        // alert(data);
+                        let htm = '<li class="person" data-chat="person1">'+
+                            '<img src="img/thomas.jpg" alt="" />'+
+                            '<span class="name">聊天室</span>'+
+                            '<span class="time">2:09 PM</span>'+
+                            '<span class="preview">这是公共聊天室</span>'+
+                            '</li>';
+                        let htm2 = '<div class="chat message-container" id="qunliao" data-chat="person1">'+
+                            '</div>';
+                        for (var i = 0; i < currData.length; i++) {
+                            //联系人
+                            htm +='<li class="person" data-chat="person'+currData[i].id+'">'+
+                                '<img src="img/dog.png" alt="" />'+
+                                '<span class="name">'+currData[i].name+'</span>'+
+                                '<span class="time">1:44 PM</span>'+
+                                '<span class="preview">言念君子，温其如玉</span>'+
+                                '</li>';
+
+                            //聊天窗口
+                            htm2 +='<div class="chat" id="danliao'+currData[i].id+'" data-chat="person'+currData[i].id+'">'+
+                                        '<div class="conversation-start">'+
+                                            '<span>Today, 6:48 AM</span>'+
+                                        '</div>'+
+                                        // '<div class="bubble you">'+
+                                        //     'Hello,'+currData[i].id+currData[i].name+
+                                        // '</div>'+
+                                    '</div>';
+                        }
+
+                        let htm3 = '<div class="write">'+
+                                    '<a href="javascript:;" class="emotion write-link smiley"></a>'+
+                                        '<input type="text" id="msg"/>'+
+                                    '<a href="javascript:;" class="write-link attach"></a>'+
+                                    '<a href="javascript:;" class="write-link send" onclick="sendMsgToServer()"></a>'+
+                                '</div>';
+
+
+                        $(".people").append(htm);
+                        $(".right").append(htm2+htm3);
+                    }
+
+                    if (data.status != 200) {
+                        console.log(data);
+                        // alert(data);
+
+                    }
+                }
+            })
+
+        }
+
+        document.querySelector('.chat[data-chat=person1]').classList.add('active-chat');
+        document.querySelector('.person[data-chat=person1]').classList.add('active');
+
+        var friends = {
+                list: document.querySelector('ul.people'),
+                all: document.querySelectorAll('.left .person'),
+                name: '' },
+
+            chat = {
+                container: document.querySelector('.container .right'),
+                current: null,
+                person: null,
+                name: document.querySelector('.container .right .top .name') };
+
+
+        friends.all.forEach(function (f) {
+            f.addEventListener('mousedown', function () {
+                f.classList.contains('active') || setAciveChat(f);
+            });
+        });
+
+        function setAciveChat(f) {
+            friends.list.querySelector('.active').classList.remove('active');
+            f.classList.add('active');
+            chat.current = chat.container.querySelector('.active-chat');
+            chat.person = f.getAttribute('data-chat');
+            chat.current.classList.remove('active-chat');
+            chat.container.querySelector('[data-chat="' + chat.person + '"]').classList.add('active-chat');
+            friends.name = f.querySelector('.name').innerText;
+            chat.name.innerHTML = friends.name;
+        }
+
+
+        $('.emotion').qqFace({
+
+            id: 'facebox',
+
+            assign: 'msg',
+
+            path: 'arclist/'	//表情存放的路径
+        });
+    })
+
+
+
+    //查看结果
+    function replace_em(str) {
+
+        str = str.replace(/\</g, '&lt;');
+
+        str = str.replace(/\>/g, '&gt;');
+
+        str = str.replace(/\n/g, '<br/>');
+
+        str = str.replace(/\[em_([0-9]*)\]/g, '<img src="arclist/$1.gif" border="0" />');
+        return str;
+
+    }
+
+    /**
+     * WebSocket客户端
+     *
+     * 使用说明：
+     * 1、WebSocket客户端通过回调函数来接收服务端消息。例如：webSocket.onmessage
+     * 2、WebSocket客户端通过send方法来发送消息给服务端。例如：webSocket.send();
+     */
+    function getWebSocket() {
+        let username = $("#usernamehide").val();
+
+
+        // alert(username);
+        // var webSocket = new WebSocket(/*[[${webSocketUrl}]]*/ 'ws://localhost:8080/chat/'+username);
+        // var webSocket = new WebSocket('ws://localhost:9999/chat/chat/'+username);
+        var webSocket = new WebSocket('ws://www.jingyingjidi.com/chat/chat/'+username);
+        /**
+         * 当服务端打开连接
+         */
+        webSocket.onopen = function (event) {
+            console.log('WebSocket打开连接');
+        };
+
+        /**
+         * 当服务端发来消息：1.广播消息 2.更新在线人数
+         */
+        webSocket.onmessage = function (event) {
+            console.log('WebSocket收到消息：%c' + event.data, 'color:green');
+            //获取服务端消息
+            var message = JSON.parse(event.data) || {};
+            var $messageContainer = $('.message-container');
+            //喉咙发炎
+            /***************************************************************************************************************************/
+            //群聊
+            if (message.type === 'SPEAK') {
+                var div = document.getElementById('qunliao');
+                var now = new Date();
+                var htm = '';
+                if(message.username == $("#namehide").val()){
+                    htm = '<div class="conversation-start">'+
+                        '<span>'+getNowFormatDate()+'</span>'+
+                        '</div>'+
+                        '<div class="bubble me">'+
+                        message.username + "：" + message.msg +
+                        '</div>';
+                }else{
+                    htm = '<div class="conversation-start">'+
+                        '<span>'+getNowFormatDate()+'</span>'+
+                        '</div>'+
+                        '<div class="bubble you">'+
+                        message.username + "：" + message.msg +
+                        '</div>';
+
+                }
+                $messageContainer.append(htm);
+
+                div.scrollTop = div.scrollHeight;
+            }
+            //上线下线消息广播
+            if (message.type === 'ENTER' || message.type === 'QUIT') {
+                var div = document.getElementById('qunliao');
+                var now = new Date();
+                var htm = '<div class="conversation-start">'+
+                        '<span>'+getNowFormatDate()+':'+message.msg+'</span>'+
+                        '</div>';
+
+                $messageContainer.append(htm);
+
+                div.scrollTop = div.scrollHeight;
+            }
+            /***************************************************************************************************************************/
+            //单聊
+            if (message.type === 'ONESPEAK') {
+                var receiveUserId = message.receiveUser;    //消息接收人
+                var sendUserId = message.userId;        //消息发送人
+                var userId=  $('#userId').val();    //当前用户id
+                if(userId == receiveUserId){
+                    // var chuangkouid = 'danliao'+message.receiveUser;
+                    var chuangkouid = 'danliao'+message.userId;
+                    var div = document.getElementById(chuangkouid);
+                    var now = new Date();
+                    var htm = "";
+                    if(message.username == $("#namehide").val()){
+                        htm = '<div class="conversation-start">'+
+                            '<span>'+getNowFormatDate()+'</span>'+
+                            '</div>'+
+                            '<div class="bubble me">'+
+                            message.username + "：" + message.msg +
+                            '</div>';
+                    }else{
+                        htm = '<div class="conversation-start">'+
+                            '<span>'+getNowFormatDate()+'</span>'+
+                            '</div>'+
+                            '<div class="bubble you">'+
+                            message.username + "：" + message.msg +
+                            '</div>';
+
+                    }/*
+                    var htm = '<div class="conversation-start">'+
+                        '<span>'+getNowFormatDate()+'</span>'+
+                        '</div>'+
+                        '<div class="bubble me">'+
+                        message.username + "：" + message.msg +
+                        '</div>';*/
+                    var $messageContainerOne = $('#'+chuangkouid);
+                    $messageContainerOne.append(htm);
+
+
+                    div.scrollTop = div.scrollHeight;
+                }else{
+                    var chuangkouid = 'danliao'+message.receiveUser;
+                    // var chuangkouid = 'danliao'+message.userId;
+                    var div = document.getElementById(chuangkouid);
+                    var now = new Date();
+                    var htm = "";
+                    if(message.username == $("#namehide").val()){
+                        htm = '<div class="conversation-start">'+
+                            '<span>'+getNowFormatDate()+'</span>'+
+                            '</div>'+
+                            '<div class="bubble me">'+
+                            message.username + "：" + message.msg +
+                            '</div>';
+                    }else{
+                        htm = '<div class="conversation-start">'+
+                            '<span>'+getNowFormatDate()+'</span>'+
+                            '</div>'+
+                            '<div class="bubble you">'+
+                            message.username + "：" + message.msg +
+                            '</div>';
+
+                    }
+                    /*var htm = '<div class="conversation-start">'+
+                        '<span>'+getNowFormatDate()+'</span>'+
+                        '</div>'+
+                        '<div class="bubble me">'+
+                        message.username + "：" + message.msg +
+                        '</div>';*/
+                    var $messageContainerOne = $('#'+chuangkouid);
+                    $messageContainerOne.append(htm);
+
+                    div.scrollTop = div.scrollHeight;
+                }
+
+            }
+
+
+            $('.chat-num').text(message.onlineCount);
+            //防止刷屏
+            var $cards = $messageContainer.children('.mdui-card:visible').toArray();
+            if ($cards.length > 100) {
+                $cards.forEach(function (item, index) {
+                    index < $cards.length - 100 && $(item).slideUp('fast');
+                });
+            }
+        };
+
+        /**
+         * 关闭连接
+         */
+        webSocket.onclose = function (event) {
+            console.log('WebSocket关闭连接');
+        };
+
+        /**
+         * 通信失败
+         */
+        webSocket.onerror = function (event) {
+            console.log('WebSocket发生异常');
+
+        };
+        return webSocket;
+    }
+
+    var webSocket = getWebSocket();
+
+
+    /**
+     * 通过WebSocket对象发送消息给服务端
+     */
+    function sendMsgToServer() {
+        let receiveUser =  $('.person.active').data('chat');
+
+
+        var str = $('#msg').val();
+        var text = replace_em(str);
+        var $message = $('#msg');
+        var userId=  $('#userId').val()
+        var sendType = 0;
+        if ($message.val()) {
+            if("person1"==receiveUser){
+                sendType = 2;   //群聊
+            }else {
+                sendType = 1;
+            }
+            webSocket.send(JSON.stringify({userId:userId,username: $('#username').text(), msg: text,type: sendType,receiveUser:receiveUser}));   //type: 2 群聊
+            $message.val(null);
+        }
+
+    }
+
+    /**
+     * 清屏
+     */
+    function clearMsg() {
+        $(".message-container").empty();
+    }
+
+    /**
+     * 使用ENTER发送消息
+     */
+    document.onkeydown = function (event) {
+        var e = event || window.event || arguments.callee.caller.arguments[0];
+        e.keyCode === 13 && sendMsgToServer();
+    };
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+        return currentdate;
+    }
+
+    function logout() {
+        /*webSocket.onclose = function (event) {
+            console.log('WebSocket关闭连接');
+        };*/
+        webSocket.close();
+        webSocket = undefined;
+        window.location.href="/chat";
+        // alert("退出");
+        /*$.ajax({
+            type: "post",
+            url: gloalUrl + "logout",
+            // data: JSON.stringify(paramdata),
+            // beforeSend: setTokenHeader,
+            contentType: 'application/json',//(可以)
+            dataType: "json",
+            async: false,
+            success: function (data) {
+
+                if (data.status == 200) {
+                    console.log(data);
+                    alert(data.msg);
+                    window.location.href="/chat";
+                }
+
+                if (data.status != 200) {
+                    console.log(data);
+                    alert(data.msg);
+                }
+            }
+        })*/
+
+
+    }
+
+</script>
+<script type="text/javascript" src="js/chat.js"></script>
+<script  src="js/index.js"></script>
+
+<div style="text-align:center;margin:1px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+    <p>适用浏览器：360、FireFox、Chrome、Opera、傲游、搜狗、世界之窗. 不支持Safari、IE8及以下浏览器。</p>
+    <p>作者：刘云强</p>
+</div>
+</body>
+</html>

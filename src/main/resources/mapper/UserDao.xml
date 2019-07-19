@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.UserDao">
+    
+	<sql id="UserColumns">
+		a.id AS "id",
+		a.username AS "username",
+		a.password AS "password",
+		a.create_date AS "createDate",
+		a.name AS "name",
+		a.is_online AS "isOnline",
+		a.session_id AS "sessionId"
+	</sql>
+	
+	<sql id="UserJoins">
+	</sql>
+
+
+	<select id="getUserByName" resultType="com.model.User">
+		SELECT
+			<include refid="UserColumns"/>
+		FROM sys_user a
+		<include refid="UserJoins"/>
+		WHERE a.username = #{username} limit 0,1
+	</select>
+
+	<insert id="insert">
+		INSERT INTO sys_user(
+			id,
+			username,
+			password,
+			create_date,
+			name,
+			is_online,
+			session_id
+		) VALUES (
+			#{id},
+			#{username},
+			#{password},
+			#{createDate},
+			#{name},
+			#{isOnline},
+			#{sessionId}
+		)
+	</insert>
+
+	<select id="getUserList" resultType="com.model.User">
+		SELECT 
+			<include refid="UserColumns"/>
+		FROM sys_user a
+		<include refid="UserJoins"/>
+		<where>
+			<!--<if test="unitWarehId != null and unitWarehId != ''">
+				AND a.unit_wareh_id = #{unitWarehId}
+			</if>
+			<if test="empNo != null and empNo != ''">
+				AND a.emp_no = #{empNo}
+			</if>-->
+		</where>
+
+		ORDER BY a.create_date desc
+
+	</select>
+
+
+
+
+
+	
+
+	
+	<!--<update id="update">
+		UPDATE send_info SET
+			pdf_path = #{pdfPath}
+		WHERE id = #{id}
+	</update>-->
+	
+	<!--<update id="delete">
+		UPDATE sequence_unit SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>-->
+
+
+</mapper>
